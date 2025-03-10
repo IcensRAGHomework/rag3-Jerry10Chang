@@ -42,7 +42,7 @@ def generate_hw01():
                 "date": int(datetime.datetime.strptime(row["CreateDate"], "%Y-%m-%d").timestamp())
             }
 
-            id = row.get("ID", "")
+            id = str(row["ID"])
             document = row.get("HostWords", "")
             collection.add(ids=[id], documents=[document], metadatas=[metadata])
 
