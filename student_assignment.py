@@ -39,7 +39,7 @@ def generate_hw01():
                 "tel": row["Tel"],
                 "city": row["City"],
                 "town": row["Town"],
-                "date": row["CreateDate"],
+                "date": int(datetime.datetime.strptime(row["CreateDate"], "%Y-%m-%d").timestamp())
             }
 
             id = row.get("ID", "")
@@ -76,3 +76,5 @@ def demo(question):
     )
     
     return collection
+
+print(generate_hw01())
