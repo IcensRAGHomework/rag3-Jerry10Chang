@@ -16,23 +16,23 @@ dbpath = "./"
 def generate_hw01():
     chroma_client = chromadb.PersistentClient(path=dbpath)
     openai_ef = embedding_functions.OpenAIEmbeddingFunction(
-        api_key=gpt_emb_config['api_key'],
-        api_base=gpt_emb_config['api_base'],
-        api_type=gpt_emb_config['openai_type'],
-        api_version=gpt_emb_config['api_version'],
-        deployment_id=gpt_emb_config['deployment_name']
+        api_key = gpt_emb_config['api_key'],
+        api_base = gpt_emb_config['api_base'],
+        api_type = gpt_emb_config['openai_type'],
+        api_version = gpt_emb_config['api_version'],
+        deployment_id = gpt_emb_config['deployment_name']
     )
-    
     collection = chroma_client.get_or_create_collection(
         name="TRAVEL",
         metadata={"hnsw:space": "cosine"},
         embedding_function=openai_ef
     )
-    if collection.count() == 0:
-        df = pd.read_csv(csv_file)
-        for _, row in df.iterrows():
+
+    df = pd.read_csv("COA_OpenData.csv")
+    for _, row in df.iterrows():
+        try:
             metadata = {
-                "file_name": csv_file,
+                "file_name": "COA_OpenData.csv",
                 "name": row["Name"],
                 "type": row["Type"],
                 "address": row["Address"],
@@ -41,10 +41,14 @@ def generate_hw01():
                 "town": row["Town"],
                 "date": int(datetime.datetime.strptime(row["CreateDate"], "%Y-%m-%d").timestamp())
             }
-            
+
+            id = row.get("ID", "")
             document = row.get("HostWords", "")
-            document_id = str(row["ID"])  
-            collection.add(ids=[document_id], documents=[document], metadatas=[metadata])
+            collection.add(ids=[id], documents=[document], metadatas=[metadata])
+
+        except Exception as e:
+            print(f"Error inserting row: {row}")
+            traceback.print_exc()
 
     return collection
 
