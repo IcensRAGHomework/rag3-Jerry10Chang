@@ -44,7 +44,7 @@ def generate_hw01():
 
             id = row.get("ID", "")
             document = row.get("HostWords", "")
-            collection.update(ids=[id], documents=[document], metadatas=[metadata])
+            collection.add(ids=[id], documents=[document], metadatas=[metadata])
 
         except Exception as e:
             print(f"Error inserting row: {row}")
