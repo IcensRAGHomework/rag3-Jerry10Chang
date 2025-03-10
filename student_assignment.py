@@ -76,5 +76,3 @@ def demo(question):
     )
     
     return collection
-
-print(generate_hw01())
